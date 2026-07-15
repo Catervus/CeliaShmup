@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Projects\C Projects\2026\CeliaShmup\ProjectFiles\bin\Debug-windows-x86_64\CeliaShmup\CeliaShmup.exe</FullPath>
+      <FullPath>C:\Projects\C\CeliaShmup\ProjectFiles\bin\Debug-windows-x86_64\CeliaShmup\CeliaShmup.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

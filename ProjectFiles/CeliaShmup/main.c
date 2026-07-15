@@ -1,5 +1,6 @@
 #include "main.h"
 
+Pond_Font* defaultFont;
 
 int main(void)
 {
@@ -18,6 +19,8 @@ void Init(void)
 
 	InitialiseGameManager();
 	EntityInit();
+
+	defaultFont = Pond_LoadFont("assets/monogram.ttf");
 }
 
 void InitialiseGameManager(void)
@@ -35,11 +38,13 @@ void Update(void)
 			{
 				gameManager.gameState = GAMEPLAY;
 			}
+
 		} break;
 
 		case GAMEPLAY:
 		{
 			EntityUpdate();
+
 		} break;
 	}
 }
@@ -57,6 +62,25 @@ void Draw(void)
 		{
 			Pond_SetRenderClearColour(RED);
 			EntityDraw();
+
 		} break;
 	}
-}
+
+	Pond_DrawRectByDimensions(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, (Pond_Colour) { 255, 0, 0, 255 }, 0);
+	
+	if (DEBUG)
+	{
+		int count = 0;
+		for (int i = 0; i < MAX_ENTITY_COUNT; i++)
+		{
+			if (entityList[i].type != ENTITY_TYPE_NONE)
+				count++;
+
+		}
+		
+		char buffer[1024];
+		snprintf(buffer, sizeof(buffer), "Entity: %i", count);
+
+		Pond_DrawText(buffer, 0, 0, BLACK, SCALE, SCALE, defaultFont);
+	}
+}	

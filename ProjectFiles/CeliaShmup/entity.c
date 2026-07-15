@@ -25,7 +25,7 @@ eid NewEntity(int type)
 
 void PlayerInit(void)
 {
-	entityList[playerID].type = ENTITY_TYPE_PLAYER;
+	playerID = NewEntity(ENTITY_TYPE_PLAYER);
 	entityList[playerID].position = (Pond_Vector2Float){ 50, 50 };
 	entityList[playerID].velocity = (Pond_Vector2Float){ 0, 0 };
 }
@@ -43,12 +43,21 @@ void EntityUpdate(void)
 
 		entityList[i].position.x += entityList[i].velocity.x;
 		entityList[i].position.y -= entityList[i].velocity.y;
+
+		if (entityList[i].type == ENTITY_TYPE_PROJECTILE)
+		{
+			if (entityList[i].lifeTime <= 0)
+			{
+				entityList[i].type = ENTITY_TYPE_NONE;
+				continue;
+			}
+			entityList[i].lifeTime -= Pond_GetDeltaTime();
+		}
 	}
 }
 
 void PlayerUpdate(void)
 {
-
 	entityList[playerID].velocity.x = 0;
 	entityList[playerID].velocity.y = 0;
 
@@ -72,6 +81,20 @@ void PlayerUpdate(void)
 		entityList[playerID].velocity.x = -PLAYER_ACC;
 	}
 
+	if (Pond_GetKey(POND_KEYBOARD_KEY_RETURN))
+	{
+		if (curShootCD <= 0)
+		{
+			eid id = NewEntity(ENTITY_TYPE_PROJECTILE);
+			entityList[id].position = entityList[playerID].position;
+			entityList[id].velocity = (Pond_Vector2Float){ PROJECTILE_SPEED, 0 };
+			entityList[id].lifeTime = PROJECTILE_LIFETIME;
+			curShootCD = SHOOT_COOLDOWN;
+		}
+	}
+
+	curShootCD -= Pond_GetDeltaTime();
+
 	// entityList[playerID].velocity.x *= PLAYER_DECC;
 	// entityList[playerID].velocity.y *= PLAYER_DECC;
 }
@@ -79,12 +102,6 @@ void PlayerUpdate(void)
 // -- DRAW -- 
 
 void EntityDraw(void)
-{
-
-	PlayerDraw();
-}
-
-void PlayerDraw(void)
 {
 	for (int i = 0; i < MAX_ENTITY_COUNT; i++)
 	{
@@ -94,4 +111,10 @@ void PlayerDraw(void)
 		Pond_DrawRectByDimensions(entityList[i].position.x * SCALE, entityList[i].position.y * SCALE,
 			16 * SCALE, 16 * SCALE, BLACK, 1);
 	}
+	// PlayerDraw();
+}
+
+void PlayerDraw(void)
+{
+	
 }

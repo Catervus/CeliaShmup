@@ -15,6 +15,7 @@ typedef struct
 	int type;
 	Pond_Vector2Float position;
 	Pond_Vector2Float velocity;
+	float lifeTime;
 
 } Entity;
 
@@ -25,6 +26,10 @@ Entity entityList[MAX_ENTITY_COUNT];
 typedef int eid;
 
 eid playerID;
+#define SHOOT_COOLDOWN .1
+float curShootCD;
+#define PROJECTILE_LIFETIME 1
+#define PROJECTILE_SPEED 5
 
 void EntityInit(void);
 void EntityUpdate(void);
