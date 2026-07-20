@@ -28,6 +28,11 @@ void PlayerInit(void)
 	playerID = NewEntity(ENTITY_TYPE_PLAYER);
 	entityList[playerID].position = (Pond_Vector2Float){ 50, 50 };
 	entityList[playerID].velocity = (Pond_Vector2Float){ 0, 0 };
+
+	for (int i = 0; i < MAX_ATTACHMENT_COUNT; i++)
+	{
+		attachments[i] = ATTACHMENT_TYPE_NONE;
+	}
 }
 
 // -- UPDATE -- 
@@ -90,13 +95,50 @@ void PlayerUpdate(void)
 			entityList[id].velocity = (Pond_Vector2Float){ PROJECTILE_SPEED, 0 };
 			entityList[id].lifeTime = PROJECTILE_LIFETIME;
 			curShootCD = SHOOT_COOLDOWN;
+
+			AttachmentAction();
 		}
+	}
+
+	if (Pond_GetKeyDown(POND_KEYBOARD_KEY_SPACE))
+	{
+		AddAttachment(ATTACHMENT_TYPE_DEFAULT);
 	}
 
 	curShootCD -= Pond_GetDeltaTime();
 
 	// entityList[playerID].velocity.x *= PLAYER_DECC;
 	// entityList[playerID].velocity.y *= PLAYER_DECC;
+}
+
+void AddAttachment(int type)
+{
+	for (int i = 0; i < MAX_ATTACHMENT_COUNT; i++)
+	{
+		if (attachments[i] == ATTACHMENT_TYPE_NONE) 
+		{
+			attachments[i] = type;
+			break;
+		}
+	}
+}
+
+void AttachmentAction(void)
+{
+	for (int i = 0; i < MAX_ATTACHMENT_COUNT; i++)
+	{
+		if (attachments[i] == ATTACHMENT_TYPE_NONE)
+			continue;
+
+		else if (attachments[i] == ATTACHMENT_TYPE_DEFAULT)
+		{
+			eid id = NewEntity(ENTITY_TYPE_PROJECTILE);
+			entityList[id].position = entityList[playerID].position;
+			entityList[id].position.y += (i + 1) * 16;
+			entityList[id].velocity = (Pond_Vector2Float){ PROJECTILE_SPEED, 0 };
+			entityList[id].lifeTime = PROJECTILE_LIFETIME;
+		}
+	}
 }
 
 // -- DRAW -- 
@@ -108,13 +150,39 @@ void EntityDraw(void)
 		if (entityList[i].type == ENTITY_TYPE_NONE)
 			continue;
 
+		if (entityList[i].type == ENTITY_TYPE_PROJECTILE)
+		{
+			Pond_DrawRectByDimensions(entityList[i].position.x * SCALE, entityList[i].position.y * SCALE,
+				8 * SCALE, 8 * SCALE, BLACK, 1);
+			continue;
+		}
+
 		Pond_DrawRectByDimensions(entityList[i].position.x * SCALE, entityList[i].position.y * SCALE,
 			16 * SCALE, 16 * SCALE, BLACK, 1);
 	}
-	// PlayerDraw();
+
+	PlayerDraw();
 }
 
 void PlayerDraw(void)
 {
-	
+	AttachmentDraw();
+}
+
+void AttachmentDraw(void)
+{
+	for (int i = 0; i < MAX_ATTACHMENT_COUNT; i++)
+	{
+		if (attachments[i] == ATTACHMENT_TYPE_NONE)
+			continue;
+
+		else if (attachments[i] == ATTACHMENT_TYPE_DEFAULT)
+		{
+			Pond_Vector2Float pos = entityList[playerID].position;
+			pos.y += (i + 1) * 16;
+
+			Pond_DrawRectByDimensions(pos.x * SCALE, pos.y * SCALE,
+				16 * SCALE, 16 * SCALE, BLACK, 0);
+		}
+	}
 }
