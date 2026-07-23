@@ -31,6 +31,7 @@ typedef struct
 	Pond_Vector2Float position;
 	Pond_Vector2Float velocity;
 	float lifeTime;
+	Pond_Texture* sprite;
 
 } Entity;
 
@@ -44,7 +45,7 @@ eid playerID;
 #define SHOOT_COOLDOWN .1
 float curShootCD;
 #define PROJECTILE_LIFETIME 1
-#define PROJECTILE_SPEED 5
+#define PROJECTILE_SPEED 12
 
 void EntityInit(void);
 void EntityUpdate(void);

@@ -2,6 +2,7 @@
 
 // -- INIT --
 
+
 void EntityInit(void) 
 {
 	for (int i = 0; i < MAX_ENTITY_COUNT; i++)
@@ -28,6 +29,9 @@ void PlayerInit(void)
 	playerID = NewEntity(ENTITY_TYPE_PLAYER);
 	entityList[playerID].position = (Pond_Vector2Float){ 50, 50 };
 	entityList[playerID].velocity = (Pond_Vector2Float){ 0, 0 };
+	entityList[playerID].sprite = playerTexture;
+
+	Entity e = entityList[playerID];
 
 	for (int i = 0; i < MAX_ATTACHMENT_COUNT; i++)
 	{
@@ -94,6 +98,8 @@ void PlayerUpdate(void)
 			entityList[id].position = entityList[playerID].position;
 			entityList[id].velocity = (Pond_Vector2Float){ PROJECTILE_SPEED, 0 };
 			entityList[id].lifeTime = PROJECTILE_LIFETIME;
+			entityList[id].sprite = projectileTexture;
+
 			curShootCD = SHOOT_COOLDOWN;
 
 			AttachmentAction();
@@ -137,6 +143,7 @@ void AttachmentAction(void)
 			entityList[id].position.y += (i + 1) * 16;
 			entityList[id].velocity = (Pond_Vector2Float){ PROJECTILE_SPEED, 0 };
 			entityList[id].lifeTime = PROJECTILE_LIFETIME;
+			entityList[id].sprite = projectileTexture;
 		}
 	}
 }
@@ -150,15 +157,17 @@ void EntityDraw(void)
 		if (entityList[i].type == ENTITY_TYPE_NONE)
 			continue;
 
-		if (entityList[i].type == ENTITY_TYPE_PROJECTILE)
-		{
-			Pond_DrawRectByDimensions(entityList[i].position.x * SCALE, entityList[i].position.y * SCALE,
-				8 * SCALE, 8 * SCALE, BLACK, 1);
-			continue;
-		}
+		// if (entityList[i].type == ENTITY_TYPE_PROJECTILE)
+		// {
+		// 	Pond_DrawRectByDimensions(entityList[i].position.x * SCALE, entityList[i].position.y * SCALE,
+		// 		8 * SCALE, 8 * SCALE, BLACK, 1);
+		// 	continue;
+		// }
 
-		Pond_DrawRectByDimensions(entityList[i].position.x * SCALE, entityList[i].position.y * SCALE,
-			16 * SCALE, 16 * SCALE, BLACK, 1);
+		Pond_DrawTexture(entityList[i].sprite, entityList[i].position.x * SCALE,
+			entityList[i].position.y * SCALE, SCALE, SCALE, 255);
+		// Pond_DrawRectByDimensions(entityList[i].position.x * SCALE, entityList[i].position.y * SCALE,
+		// 	16 * SCALE, 16 * SCALE, BLACK, 1);
 	}
 
 	PlayerDraw();
@@ -181,8 +190,10 @@ void AttachmentDraw(void)
 			Pond_Vector2Float pos = entityList[playerID].position;
 			pos.y += (i + 1) * 16;
 
-			Pond_DrawRectByDimensions(pos.x * SCALE, pos.y * SCALE,
-				16 * SCALE, 16 * SCALE, BLACK, 0);
+			Pond_DrawTexture(defaultTexture, pos.x * SCALE, pos.y * SCALE, SCALE, SCALE, 255);
+
+			// Pond_DrawRectByDimensions(pos.x * SCALE, pos.y * SCALE,
+			// 	16 * SCALE, 16 * SCALE, BLACK, 0);
 		}
 	}
 }

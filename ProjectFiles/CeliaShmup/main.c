@@ -1,7 +1,5 @@
 #include "main.h"
 
-Pond_Font* defaultFont;
-
 int main(void)
 {
 	Pond_Init(&Init, &Update, &Draw);
@@ -17,10 +15,13 @@ void Init(void)
 	Pond_SetRenderClearColour(BLACK);
 	Pond_SetWindowResizable(1);
 
+	defaultFont = Pond_LoadFont("assets/monogram.ttf");
+	defaultTexture = Pond_LoadTexture("assets/default_sprite.png", POND_TEXTURE_BLEND_MODE_NO_BLENDING);
+	playerTexture = Pond_LoadTexture("assets/player_sprite.png", POND_TEXTURE_BLEND_MODE_NO_BLENDING);
+	projectileTexture = Pond_LoadTexture("assets/projectile_sprite.png", POND_TEXTURE_BLEND_MODE_NO_BLENDING);
+
 	InitialiseGameManager();
 	EntityInit();
-
-	defaultFont = Pond_LoadFont("assets/monogram.ttf");
 }
 
 void InitialiseGameManager(void)
